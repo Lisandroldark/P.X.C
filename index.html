@@ -1,65 +1,117 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>P.X.C - Projeto Xadrez na Comunidade</title>
-  <link rel="shortcut icon" href="510246158_1767343280657424_3572743431241889946_n.jpg" type="image/x-icon">
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aviator Simples com Bot</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      margin-bottom: 10px;
+    }
+    #plane {
+      font-size: 50px;
+      margin-top: 40px;
+      animation: fly 5s linear infinite;
+    }
+    @keyframes fly {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(100vw); }
+    }
+    .multiplier {
+      font-size: 48px;
+      margin: 20px 0;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      margin: 10px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+    }
+    .start-btn { background: green; color: white; }
+    .cashout-btn { background: red; color: white; }
+    .info {
+      margin-top: 20px;
+      font-size: 16px;
+    }
+    .bot-alert {
+      font-size: 18px;
+      color: yellow;
+      margin-top: 15px;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>P.X.C - Projeto Xadrez na Comunidade</h1>
-    <nav>
-      <ul>
-        <li><a href="inicio.html">Início</a></li>
-        <li><a href="#sobre">Sobre o Projeto</a></li>
-        <li><a href="#funciona">Como Funciona</a></li>
-        <li><a href="#galeria">Galeria</a></li>
-        <li><a href="#contato">Contato</a></li>
-      </ul>
-    </nav>
-  </header>
+  <h1>Aviator Simples com Bot</h1>
+  <div id="plane">🛩️</div>
+  <div class="multiplier" id="multiplier">1.00x</div>
+  <button class="start-btn" onclick="startGame()">Começar</button>
+  <button class="cashout-btn" onclick="cashout()">Retirar</button>
+  <div class="bot-alert" id="botAlert">🤖 Bot analisando o melhor momento...</div>
+  <div class="info" id="info"></div>
 
-  <section id="inicio">
-    <h2>Bem-vindo ao P.X.C!</h2>
-    <p>Ensinar xadrez a crianças de 8 a 13 anos, promovendo raciocínio lógico, disciplina, convivência e oportunidades educativas.</p>
-  </section>
+  <script>
+    let multiplier = 1.00;
+    let interval;
+    let inGame = false;
+    let history = [];
+    let botMessage = document.getElementById('botAlert');
 
-  <section id="sobre">
-    <h2>Quem Somos</h2>
-    <p>Somos uma equipe que sonha tornar o xadrez um desporto muito procurado e jogado nas comunidades.</p>
-  </section>
+    function startGame() {
+      if (inGame) return;
+      multiplier = 1.00;
+      document.getElementById('info').innerText = '';
+      document.getElementById('multiplier').innerText = multiplier.toFixed(2) + 'x';
+      inGame = true;
+      botMessage.innerText = '🤖 Bot analisando o melhor momento...';
+      interval = setInterval(() => {
+        multiplier += Math.random() * 0.1;
+        document.getElementById('multiplier').innerText = multiplier.toFixed(2) + 'x';
 
-  <section id="funciona">
-    <h2>Como Funciona</h2>
-    <ul>
-      <li>Idade permitida: 8 a 13 anos</li>
-      <li>Horários: Manhã e Tarde</li>
-      <li>Local: explicação cérebro do zango
-</li>
-      <li>Dias: Segunda a Sexta</li>
-      <li>Inscrição: 200 Kz</li>
-      <li>Semanada: 1.000 Kz</li>
-    </ul>
-  </section>
+        if (Math.random() < 0.01) {
+          endGame();
+        } else {
+          runBotAdvice();
+        }
+      }, 100);
+    }
 
-  <section id="galeria">
-    <h2>Galeria</h2>
-    <p>Em breve, fotos das atividades e cartazes estarão disponíveis aqui.</p>
-  </section>
+    function endGame() {
+      clearInterval(interval);
+      inGame = false;
+      history.push(multiplier);
+      if (history.length > 10) history.shift();
+      document.getElementById('info').innerText = '💥 O avião caiu em ' + multiplier.toFixed(2) + 'x!';
+    }
 
-  <section id="contato">
-    <h2>Contato</h2>
-    <p>Telemóveis: 958517626 / 922694565</p>
-    <p>Canal WhatsApp: <a href="https://l.facebook.com/l.php?u=https%3A%2F%2Fwhatsapp.com%2Fchannel%2F0029VbAaMqZ8fewuExN4kJ1B%3Ffbclid%3DIwZXh0bgNhZW0CMTAAYnJpZBExZjZQRGZmcDdUZUhCVlBMYgEeniLN3lpilZ3R3To7snay7n_6wUvZ0r2f2f6B3HMxvEQq8yIWa8Nn9nmCET8_aem_PypLp1G6wHnH3yhHi9kDoA&h=AT3IpobqiKDN8LzTenXvYswLdHKYFS2VXHGo6Y-UMn5mTyPdZhxHw93ZJZr8QU7vCvWlVwARda4CHFQpJUkTgAOk0NVsJHSGUxzNKp8bcCAl1IcH4djYAoGWutlxjPPN_a1SUw">Marcelo Costa</a></p>
-  </section>
+    function cashout() {
+      if (!inGame) return;
+      clearInterval(interval);
+      inGame = false;
+      history.push(multiplier);
+      if (history.length > 10) history.shift();
+      document.getElementById('info').innerText = '✅ Você retirou em ' + multiplier.toFixed(2) + 'x!';
+    }
 
-  <footer>
-    <p>&copy; 2025 P.X.C - Projeto Xadrez na Comunidade</p>
-    <p>Contato: 958517626 / 922694565 | Canal WhatsApp: Marcelo Costa</p>
-  </footer>
-
-  <script src="script.js"></script>
+    function runBotAdvice() {
+      if (history.length < 5) return;
+      const avg = history.reduce((a, b) => a + b, 0) / history.length;
+      if (avg < 2) {
+        botMessage.innerText = '🤖 Bot: Muitos voos baixos. Aposte com cautela!';
+      } else if (avg >= 2 && avg < 4) {
+        botMessage.innerText = '🤖 Bot: Bom momento para apostar até 2x.';
+      } else {
+        botMessage.innerText = '🤖 Bot: Tendência de voos altos. Aposte agora!';
+      }
+    }
+  </script>
 </body>
 </html>
